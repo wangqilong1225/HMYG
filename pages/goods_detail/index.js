@@ -58,6 +58,7 @@ Page({
     if(index===-1){
       //不存在
       this.GoodsInfo.num=1;
+      this.GoodsInfo.checked=true;
       cart.push(this.GoodsInfo);
     }else{
       //已经存在购物车
@@ -65,6 +66,7 @@ Page({
     }
     // 3.把购物车重新添加到缓存中
     wx.setStorageSync("cart",cart);
+    console.log(cart);
 
     // 4.弹窗提示
     wx.showToast({
