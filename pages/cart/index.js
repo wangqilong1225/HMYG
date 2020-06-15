@@ -22,6 +22,25 @@
     1.获取缓存中的购物车数据
     2.把购物车数据 填充到data中
 
+  4.全选的实现 数据展示
+    1.onshow 获取缓存中的购物车数组
+    2.根据购物车中的商品数据 所有的商品都被选中 checked=true
+
+  5.总价格和总数量
+    1.需要商品被选中 才计算
+    2.获取购物车数组
+    3.遍历商品
+    4.判断商品是否被选中
+    5.总价格 += 商品的单价 * 商品的数量
+    6.总数量 += 商品的数量
+    7.把计算后的价格和数量展示
+
+  6.商品的选中
+    1.绑定change事件
+    2.获取到被修改的商品对象
+    3.商品对象的选中状态取反
+    4.重新填充回data到缓存中
+    5.重新计算全选，总价格，总数量
 */
 
 import { getSetting, chooseAddress, openSetting } from "../../utils/asyncWx.js"
@@ -30,18 +49,41 @@ import regeneratorRuntime from "../../lib/runtime/runtime"
 Page({
   data: {
     address: {},
-    cart:[]
+    cart: [],
+    allChecked: false,
+    totalPrice: 0,
+    totalNum: 0
   },
 
   onShow() {
     //获取地址信息
     const address = wx.getStorageSync('address');
     //获取购物车信息
-    const cart=wx.getStorageSync('cart');
+    const cart = wx.getStorageSync('cart') || [];
+    //计算全选
+    //const allChecked = cart.length != 0 ? cart.every(v => v.checked) : false;
+    let allChecked = true;
+    //总价格 总数量
+    let totalPrice = 0;
+    let totalNum = 0;
+
+    cart.forEach(v => {
+      if (v.checked) {
+        totalPrice += v.num * v.goods_price;
+        totalNum += v.num;
+      } else {
+        allChecked = false;
+      }
+    });
+
+    allChecked = cart.length != 0 ? allChecked : false;
 
     this.setData({
       address: address,
-      cart:cart
+      cart: cart,
+      allChecked: allChecked,
+      totalPrice: totalPrice,
+      totalNum: totalNum
     });
 
   },

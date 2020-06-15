@@ -63,19 +63,19 @@
 <view class="footer_tool">
     <view class="all_chk_wrap">
         <checkbox-group bindchange="">
-            <checkbox></checkbox>
+            <checkbox checked="{{allChecked}}">全选</checkbox>
         </checkbox-group>
     </view>
       
     <view class="total_price_wrap">
         <view class="total_price">
-            合计：<text class=""total_price_text>￥999</text>
+            合计：<text class=""total_price_text>￥{{totalPrice}}</text>
         </view>
         <view>包含运费</view>
     </view>
       
     <view class="order_pay_wrap">
-        结算(2)
+        结算({{totalNum}})
     </view>
       
 </view>
