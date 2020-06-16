@@ -46,3 +46,21 @@ export const openSetting = () => {
         });
     });
 }
+
+/*
+    promise 形式 showModel
+*/
+export const showModel = ({content}) => {
+    return new Promise((resolve, reject) => {
+        wx.showModal({
+            title: '提示',
+            content: content,
+            success: (result) => {
+                resolve(result);
+            },
+            fail:(err)=>{
+                reject(err);
+            }
+          });
+    });
+}

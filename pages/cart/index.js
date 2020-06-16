@@ -41,9 +41,20 @@
     3.商品对象的选中状态取反
     4.重新填充回data到缓存中
     5.重新计算全选，总价格，总数量
+
+  7.全选和反选
+    1.全选复选框绑定事件 change
+    2.获取data中的全选变量 allchecked
+    3.直接取反
+    4.遍历购物车数组 让里面 商品选中状态跟随 allchecked改变而改变
+    5.把购物车数组和allchecked重新设置到data，缓存中
+
+  8.商品数量的编辑
+    1.“+”，“-”按钮 绑定到同一个点击事件
+    2.传递被点击商品的id
 */
 
-import { getSetting, chooseAddress, openSetting } from "../../utils/asyncWx.js"
+import { getSetting, chooseAddress, openSetting, showModel } from "../../utils/asyncWx.js"
 import regeneratorRuntime from "../../lib/runtime/runtime"
 
 Page({
@@ -60,7 +71,7 @@ Page({
     const address = wx.getStorageSync('address');
     //获取购物车信息
     const cart = wx.getStorageSync('cart') || [];
-   
+
     this.setData({
       address: address
     });
@@ -126,7 +137,7 @@ Page({
     let index = cart.findIndex(v => v.goods_id === goods_id);
     //选中状态取反
     cart[index].checked = !cart[index].checked;
-    
+
     this.setCart(cart);
   },
 
@@ -159,5 +170,40 @@ Page({
       totalNum: totalNum
     });
     wx.setStorageSync("cart", cart);
+  },
+
+  //商品全选功能
+  handleItemAllcheck() {
+    //1.获取data中的数据
+    let cart = this.data.cart;
+    let allChecked = this.data.allChecked;
+    //2.修改值
+    allChecked = !allChecked;
+    //3.循环修改cart数组中的商品选中状态
+    cart.forEach(v => v.checked = allChecked);
+    //4.把修改后值填充回data或者缓存中
+    this.setCart(cart);
+  },
+
+  //商品数量编辑功能
+  async handleItemNumEdit(e) {
+    const operation = e.currentTarget.dataset.operation;
+    const id = e.currentTarget.dataset.id;
+    let cart = this.data.cart;
+    //找到商品索引
+    const index = cart.findIndex(v => v.goods_id === id);
+    //数量为1时 减少为0判断是否要进行删除
+    if (cart[index].num === 1 && operation === -1) {
+      const result = await showModel({ content: '您是否要删除？' });
+      if (result.confirm) {
+        cart.splice(index, 1);
+        this.setCart(cart);
+      }
+    } else {
+      //修改数量
+      cart[index].num += operation;
+      this.setCart(cart);
+    }
+
   }
 })
