@@ -52,9 +52,14 @@
   8.商品数量的编辑
     1.“+”，“-”按钮 绑定到同一个点击事件
     2.传递被点击商品的id
+
+  9.点击结算
+    1.判断有没有收货地址信息
+    2.判断用户有没有选购商品
+    3.经过以上验证跳转到支付页面
 */
 
-import { getSetting, chooseAddress, openSetting, showModel } from "../../utils/asyncWx.js"
+import { getSetting, chooseAddress, openSetting, showModel, showTost } from "../../utils/asyncWx.js"
 import regeneratorRuntime from "../../lib/runtime/runtime"
 
 Page({
@@ -204,6 +209,26 @@ Page({
       cart[index].num += operation;
       this.setCart(cart);
     }
+  },
 
+  //点击结算
+  async handlePay() {
+    const address = this.data.address;
+    const totalNum = this.data.totalNum;
+    //判断收货地址
+    if (!address.userName) {
+      await showTost({ title: '您还没有选择收货地址' });
+      return;
+    }
+    //判断有没有选购商品
+    if (totalNum === 0) {
+      await showTost({ title: '您还没有选购商品' });
+      return;
+    }
+    //跳转支付页面
+    wx.navigateTo({
+      url: '/pages/pay/index'
+    });
+      
   }
 })

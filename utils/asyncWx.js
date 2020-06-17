@@ -64,3 +64,21 @@ export const showModel = ({content}) => {
           });
     });
 }
+
+/*
+    promise 形式 showTost
+*/
+export const showTost = ({title}) => {
+    return new Promise((resolve, reject) => {
+        wx.showToast({
+            title: title,
+            icon: 'none',
+            success: (result) => {
+                resolve(result);
+            },
+            fail:(err)=>{
+                reject(err);
+            }
+          });
+    });
+}
